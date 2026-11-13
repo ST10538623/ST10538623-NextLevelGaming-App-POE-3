@@ -1,5 +1,6 @@
 <resources>
     <color name="background">#070910</color>
+    <color name="secondary_background">#0B0F1A</color>
     <color name="card">#101421</color>
     <color name="electric_blue">#3C7CFF</color>
     <color name="purple">#9B5CFF</color>

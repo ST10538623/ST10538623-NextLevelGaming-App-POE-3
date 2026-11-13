@@ -18,7 +18,7 @@ import com.nextlevelgaming.arena.calculator.FeeCalculator
 import com.nextlevelgaming.arena.data.Offering
 import com.nextlevelgaming.arena.data.OfferingCatalog
 import com.nextlevelgaming.arena.data.OfferingType
-import java.util.Locale
+import com.nextlevelgaming.arena.util.RandFormatter
 
 class MainActivity : Activity() {
     private lateinit var screenContent: LinearLayout
@@ -103,7 +103,8 @@ class MainActivity : Activity() {
     }
 
     private fun renderHome() {
-        addText("NEXT LEVEL STARTS HERE", 13, color(R.color.electric_blue), bold = true)
+        addBrandIdentity()
+        addEyebrow("EST. 2026")
         addText("Play. Compete.\nLevel up.", 36, color(R.color.white), bold = true, bottom = 12)
         addText(
             "Your gaming and esports arena for all-day play, premium experiences and competitive training.",
@@ -111,10 +112,14 @@ class MainActivity : Activity() {
             color(R.color.muted),
             bottom = 22
         )
+        addIllustration(
+            R.drawable.arena_hero,
+            "Gaming controller and esports display illustration"
+        )
         addButton("Explore gaming packages") { navigate(ROUTE_PACKAGES) }
         addOutlineButton("Browse individual experiences") { navigate(ROUTE_EXPERIENCES) }
 
-        addSectionTitle("Choose your next level")
+        addSectionTitle("Featured offerings")
         addOfferingCards(OfferingCatalog.all.take(3))
         addSectionTitle("About the arena")
         addText(
@@ -128,28 +133,36 @@ class MainActivity : Activity() {
     }
 
     private fun renderAbout() {
-        addEyebrow("WHO WE ARE")
+        addEyebrow("EST. 2026 · WHO WE ARE")
         addText("About Us", 30, color(R.color.white), bold = true, bottom = 12)
+        addIllustration(
+            R.drawable.arena_about,
+            "Illustration of a gaming arena tournament stage"
+        )
         addText(
-            "Next Level Gaming is a gaming and esports arena built for players, teams and celebrations.",
+            "Next Level Gaming & Esports Arena is a place for players, teams and friends to play, compete and celebrate.",
             16,
             color(R.color.muted),
             bottom = 20
         )
         addInfoCard(
-            "Play your way",
-            "Choose from all-day PC and console gaming, premium private play, immersive experiences and more."
+            "Our history",
+            "Established in 2026, Next Level Gaming & Esports Arena provides a place for gaming, esports and shared experiences."
         )
         addInfoCard(
-            "Compete and improve",
-            "Take part in tournaments or work on your competitive skills with a dedicated esports training package."
+            "Our vision",
+            "To be a welcoming arena where players can discover new games, enjoy friendly competition and create lasting memories."
         )
         addInfoCard(
-            "Celebrate together",
-            "Bring friends together for multiplayer challenges and gaming-themed birthday celebrations."
+            "Our mission",
+            "To provide accessible gaming, quality experiences and opportunities for players to learn, compete and connect."
+        )
+        addInfoCard(
+            "Our goals",
+            "Offer enjoyable gaming for different interests, support players as they build their skills, and make group celebrations memorable."
         )
         addText(
-            "Business phone, email and street address have not been provided. Please use the enquiry form to draft a message.",
+            "Business phone, email and street address have not been provided. No contact details are displayed until verified.",
             14,
             color(R.color.muted),
             top = 8,
@@ -180,9 +193,9 @@ class MainActivity : Activity() {
             card.findViewById<TextView>(R.id.offering_name).text = offering.name
             card.findViewById<TextView>(R.id.offering_description).text = offering.purpose
             card.findViewById<TextView>(R.id.offering_price).text =
-                "${formatRand(offering.priceRand)}  ·  View details"
+                "${RandFormatter.formatRand(offering.priceRand)}  ·  View details"
             card.contentDescription =
-                "${offering.name}, ${offering.purpose} Price ${formatRand(offering.priceRand)}. Double tap for details."
+                "${offering.name}, ${offering.purpose} Price ${RandFormatter.formatRand(offering.priceRand)}. Double tap for details."
             card.setOnClickListener { navigate("$ROUTE_DETAIL_PREFIX${offering.id}") }
             screenContent.addView(card, verticalLayout(bottom = 12))
         }
@@ -192,7 +205,7 @@ class MainActivity : Activity() {
         addEyebrow(if (offering.type == OfferingType.PACKAGE) "GAMING PACKAGE" else "INDIVIDUAL EXPERIENCE")
         addText(offering.name, 30, color(R.color.white), bold = true, bottom = 10)
         addText(offering.purpose, 16, color(R.color.muted), bottom = 18)
-        addInfoCard("Price", formatRand(offering.priceRand), accent = true)
+        addInfoCard("Price", RandFormatter.formatRand(offering.priceRand), accent = true)
         addSectionTitle("What's included")
         offering.inclusions.forEach { item ->
             addText("•  $item", 16, color(R.color.white), bottom = 12)
@@ -219,13 +232,13 @@ class MainActivity : Activity() {
 
         OfferingCatalog.all.forEach { offering ->
             val checkBox = CheckBox(this).apply {
-                text = "${offering.name}  ·  ${formatRand(offering.priceRand)}"
+                text = "${offering.name}  ·  ${RandFormatter.formatRand(offering.priceRand)}"
                 textSize = 15f
                 setTextColor(color(R.color.white))
                 buttonTintList = android.content.res.ColorStateList.valueOf(color(R.color.electric_blue))
                 isChecked = offering.id in selectedOfferingIds
                 minHeight = dp(54)
-                contentDescription = "${offering.name}, ${formatRand(offering.priceRand)}"
+                contentDescription = "${offering.name}, ${RandFormatter.formatRand(offering.priceRand)}"
             }
             checkBox.setOnCheckedChangeListener { _, checked ->
                 if (checked) selectedOfferingIds.add(offering.id) else selectedOfferingIds.remove(offering.id)
@@ -261,10 +274,34 @@ class MainActivity : Activity() {
         val summary = FeeCalculator.calculate(selected)
         summaryContainer.removeAllViews()
         summaryContainer.addView(makeText("Your estimate", 19, color(R.color.white), bold = true), verticalLayout(bottom = 12))
-        addSummaryRow(summaryContainer, "Bookings", summary.bookingCount.toString())
-        addSummaryRow(summaryContainer, "Subtotal", formatRand(summary.subtotalRand))
-        addSummaryRow(summaryContainer, "Discount", "${summary.discountPercent}%  (${formatRand(summary.discountRand)})")
-        addSummaryRow(summaryContainer, "Total", formatRand(summary.totalRand), emphasize = true)
+        summaryContainer.addView(
+            makeText("Selected offerings", 15, color(R.color.white), bold = true),
+            verticalLayout(bottom = 8)
+        )
+        if (selected.isEmpty()) {
+            summaryContainer.addView(
+                makeText("No offerings selected", 14, color(R.color.muted)),
+                verticalLayout(bottom = 12)
+            )
+        } else {
+            selected.forEach { offering ->
+                addSummaryRow(
+                    summaryContainer,
+                    offering.name,
+                    RandFormatter.formatRand(offering.priceRand)
+                )
+            }
+        }
+        addSummaryRow(summaryContainer, "Distinct selections", summary.bookingCount.toString())
+        addSummaryRow(summaryContainer, "Subtotal", RandFormatter.formatRand(summary.subtotalRand))
+        addSummaryRow(summaryContainer, "Discount rate", "${summary.discountPercent}%")
+        addSummaryRow(summaryContainer, "Discount amount", RandFormatter.formatRand(summary.discountRand))
+        addSummaryRow(
+            summaryContainer,
+            "Final total",
+            RandFormatter.formatRand(summary.totalRand),
+            emphasize = true
+        )
     }
 
     private fun addSummaryRow(
@@ -301,11 +338,16 @@ class MainActivity : Activity() {
             "Next Level Gaming & Esports Arena\nPhone, email and street address have not been supplied."
         )
         addSectionTitle("Send an enquiry")
+        addText("Name", 14, color(R.color.white), bottom = 4)
         val nameInput = addInput("Your name", InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_WORDS)
+        addText("Email", 14, color(R.color.white), bottom = 4)
         val emailInput = addInput("Email address", InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS)
+        addText("Subject", 14, color(R.color.white), bottom = 4)
+        val subjectInput = addInput("Enquiry subject", InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES)
+        addText("Message", 14, color(R.color.white), bottom = 4)
         val messageInput = addInput(
             "How can we help?",
-            InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE,
+            InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES,
             multiline = true
         )
         addText(
@@ -315,11 +357,19 @@ class MainActivity : Activity() {
             top = 2,
             bottom = 14
         )
+        val feedback = makeText("", 14, color(R.color.muted))
+        feedback.accessibilityLiveRegion = View.ACCESSIBILITY_LIVE_REGION_POLITE
         addButton("Review enquiry") {
             val name = nameInput.text.toString().trim()
             val email = emailInput.text.toString().trim()
+            val subject = subjectInput.text.toString().trim()
             val message = messageInput.text.toString().trim()
             var valid = true
+
+            nameInput.error = null
+            emailInput.error = null
+            subjectInput.error = null
+            messageInput.error = null
 
             if (name.isBlank()) {
                 nameInput.error = "Enter your name"
@@ -329,19 +379,29 @@ class MainActivity : Activity() {
                 emailInput.error = "Enter a valid email address"
                 valid = false
             }
+            if (subject.isBlank()) {
+                subjectInput.error = "Enter a subject"
+                valid = false
+            }
             if (message.isBlank()) {
                 messageInput.error = "Enter a message"
                 valid = false
             }
 
             if (valid) {
+                feedback.text = "All fields are valid. This demo does not send or store enquiries."
+                feedback.setTextColor(color(R.color.electric_blue))
                 AlertDialog.Builder(this)
                     .setTitle("Enquiry ready")
-                    .setMessage("Thanks, $name. This demonstration form does not send messages. Connect a business contact address or backend to receive enquiries.")
+                    .setMessage("Thanks, $name. Your enquiry \"$subject\" has been checked on this device only. It has not been sent or stored.")
                     .setPositiveButton("OK", null)
                     .show()
+            } else {
+                feedback.text = "Please correct the highlighted fields."
+                feedback.setTextColor(color(R.color.purple))
             }
         }
+        screenContent.addView(feedback, verticalLayout(top = 2, bottom = 12))
     }
 
     private fun addInput(hint: String, inputType: Int, multiline: Boolean = false): EditText {
@@ -380,6 +440,43 @@ class MainActivity : Activity() {
         )
         card.addView(makeText(body, 14, color(R.color.muted)))
         screenContent.addView(card, verticalLayout(bottom = 12))
+    }
+
+    private fun addBrandIdentity() {
+        val brand = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER_VERTICAL
+        }
+        val logo = android.widget.ImageView(this).apply {
+            setImageResource(R.drawable.ic_arena_mark)
+            contentDescription = "Next Level Gaming logo"
+        }
+        brand.addView(logo, LinearLayout.LayoutParams(dp(48), dp(48)).apply {
+            marginEnd = dp(12)
+        })
+        brand.addView(
+            makeText("Next Level Gaming\n& Esports Arena", 17, color(R.color.white), bold = true),
+            LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f)
+        )
+        screenContent.addView(brand, verticalLayout(bottom = 18))
+    }
+
+    private fun addIllustration(drawableId: Int, description: String) {
+        val illustration = android.widget.ImageView(this).apply {
+            setImageResource(drawableId)
+            contentDescription = description
+            scaleType = android.widget.ImageView.ScaleType.FIT_CENTER
+            adjustViewBounds = true
+        }
+        screenContent.addView(
+            illustration,
+            LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                dp(160)
+            ).apply {
+                bottomMargin = dp(10)
+            }
+        )
     }
 
     private fun addEyebrow(label: String) {
@@ -453,9 +550,12 @@ class MainActivity : Activity() {
         }
         listOf(R.id.nav_home, R.id.nav_packages, R.id.nav_experiences, R.id.nav_calculator, R.id.nav_contact)
             .forEach { id ->
-                findViewById<Button>(id).setTextColor(
-                    color(if (id == selectedId) R.color.electric_blue else R.color.muted)
-                )
+                val tint = color(if (id == selectedId) R.color.electric_blue else R.color.muted)
+                findViewById<Button>(id).apply {
+                    setTextColor(tint)
+                    compoundDrawableTintList =
+                        android.content.res.ColorStateList.valueOf(tint)
+                }
             }
     }
 
@@ -467,8 +567,6 @@ class MainActivity : Activity() {
             topMargin = dp(top)
             bottomMargin = dp(bottom)
         }
-
-    private fun formatRand(amount: Int): String = String.format(Locale.forLanguageTag("en-ZA"), "R %,d", amount)
 
     private fun color(resourceId: Int): Int = getColor(resourceId)
 

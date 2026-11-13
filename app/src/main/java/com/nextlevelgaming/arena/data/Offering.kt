@@ -35,7 +35,7 @@ object OfferingCatalog {
             name = "VIP Gaming Experience",
             type = OfferingType.PACKAGE,
             priceRand = 1500,
-            purpose = "Premium gaming with exclusive facilities.",
+            purpose = "Premium gaming experience with exclusive facilities.",
             inclusions = listOf(
                 "Private gaming booth",
                 "Premium gaming equipment",

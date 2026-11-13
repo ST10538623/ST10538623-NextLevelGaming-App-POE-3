@@ -21,6 +21,14 @@ class FeeCalculatorTest {
     }
 
     @Test
+    fun oneR1500SelectionHasNoDiscount() {
+        assertEquals(
+            FeeSummary(1, 1500, 0, 0, 1500),
+            FeeCalculator.calculate(listOf(gamerPass))
+        )
+    }
+
+    @Test
     fun oneR750SelectionHasNoDiscount() {
         assertEquals(
             FeeSummary(1, 750, 0, 0, 750),

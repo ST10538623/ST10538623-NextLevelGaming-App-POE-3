@@ -1,0 +1,30 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="320dp"
+    android:height="160dp"
+    android:viewportWidth="320"
+    android:viewportHeight="160">
+    <path
+        android:fillColor="@color/secondary_background"
+        android:pathData="M12,0h296c6.6,0 12,5.4 12,12v136c0,6.6 -5.4,12 -12,12h-296c-6.6,0 -12,-5.4 -12,-12v-136c0,-6.6 5.4,-12 12,-12z" />
+    <path
+        android:fillColor="@color/card"
+        android:pathData="M60,27h200v77h-200z" />
+    <path
+        android:fillColor="@color/electric_blue"
+        android:pathData="M70,91L110,53l29,28 29,-36 40,46z" />
+    <path
+        android:fillColor="@color/purple"
+        android:pathData="M128,111h64v9h-64zM104,121h112v8h-112z" />
+    <path
+        android:fillColor="@color/white"
+        android:pathData="M154,44h12v17h-12zM145,51h30v7h-30z" />
+    <path
+        android:fillColor="@color/electric_blue"
+        android:pathData="M42,120h48v19h-48z" />
+    <path
+        android:fillColor="@color/purple"
+        android:pathData="M230,120h48v19h-48z" />
+    <path
+        android:fillColor="@color/white"
+        android:pathData="M57,103a9,9 0,1 0,18 0a9,9 0,1 0,-18 0M245,103a9,9 0,1 0,18 0a9,9 0,1 0,-18 0" />
+</vector>

@@ -5,3 +5,28 @@ local.properties
 .idea/
 *.iml
 .DS_Store
+.kotlin/
+
+# Expo and JavaScript dependencies/build output
+node_modules/
+.expo/
+dist/
+web-build/
+*.tsbuildinfo
+
+# Local configuration, credentials, and signing files
+.env
+.env.*
+!.env.example
+*.jks
+*.keystore
+*.pem
+*.p8
+*.p12
+*.key
+*.mobileprovision
+
+# Expo scaffold files not needed for this assignment
+/nextlevel-expo/AGENTS.md
+/nextlevel-expo/LICENSE
+/nextlevel-expo/.claude/
